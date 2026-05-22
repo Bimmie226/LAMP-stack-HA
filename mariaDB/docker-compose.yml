@@ -1,0 +1,114 @@
+version: "3.9"
+
+services:
+  db01:
+    image: mariadb:latest
+    container_name: db01
+    hostname: db01
+    environment: 
+      MARIADB_ROOT_PASSWORD: root
+    ports:
+      - "3307:3306"
+    volumes: 
+      - ./db01/db01.cnf:/etc/mysql/conf.d/db01.cnf
+      - db01_data:/var/lib/mysql
+    networks: 
+      - galera
+
+  db02: 
+    image: mariadb:latest
+    container_name: db02
+    hostname: db02
+    environment: 
+      MARIADB_ROOT_PASSWORD: root 
+    ports:
+      - "3308:3306"
+    volumes: 
+      - ./db02/db02.cnf:/etc/mysql/conf.d/db02.cnf
+      - db02_data:/var/lib/mysql
+    networks: 
+      - galera 
+
+  db03: 
+    image: mariadb:latest
+    container_name: db03
+    hostname: db03
+    environment: 
+      MARIADB_ROOT_PASSWORD: root 
+    ports:
+      - "3309:3306"
+    volumes: 
+      - ./db03/db03.cnf:/etc/mysql/conf.d/db03.cnf
+      - db03_data:/var/lib/mysql
+    networks: 
+      - galera 
+
+  maxscale_01:
+    image: mariadb/maxscale:24.02
+    container_name: maxscale01
+    hostname: maxscale01
+    volumes: 
+      - ./maxscale/maxscale.cnf:/etc/maxscale.cnf
+    ports: 
+      - "4001:4000"
+      - "8981:8989"
+    depends_on: 
+      - db01
+      - db02
+      - db03
+    networks: 
+      - galera
+
+  maxscale_02:
+    image: mariadb/maxscale:24.02
+    container_name: maxscale02
+    hostname: maxscale02
+    volumes: 
+      - ./maxscale/maxscale.cnf:/etc/maxscale.cnf
+    ports: 
+      - "4002:4000"
+      - "8982:8989"
+    depends_on: 
+      - db01
+      - db02
+      - db03
+    networks: 
+      - galera
+
+  maxscale_03: 
+    image: mariadb/maxscale:24.02
+    container_name: maxscale03
+    hostname: maxscale03
+    volumes: 
+      - ./maxscale/maxscale.cnf:/etc/maxscale.cnf
+    ports: 
+      - "4003:4000"
+      - "8983:8989"
+    depends_on:
+      - db01
+      - db02
+      - db03
+    networks: 
+      - galera
+
+  nginx: 
+    image: nginx:latest
+    container_name: nginx
+    porst: 
+      - "8989:80"
+    volumes: 
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on: 
+      - maxscale_01
+      - maxscale_02
+      - maxscale_03
+    networks: 
+      - galera
+
+volumes: 
+  db01_data:
+  db02_data:
+  db03_data:
+
+networks: 
+  galera: 
