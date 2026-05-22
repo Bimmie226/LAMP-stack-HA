@@ -1,0 +1,76 @@
+[maxscale]
+threads                 = auto           # Use all available CPU cores
+log_augmentation        = 1
+ms_timestamp            = 1
+syslog                  = 0
+maxlog                  = 1
+log_info                = 0              # Set to 1 for debug
+log_warning             = 1
+log_error               = 1
+admin_host              = 0.0.0.0
+admin_port              = 8989
+
+# Monitor
+
+[Galera-monitor]
+type=monitor 
+module=galeramon
+servers=db01,db02,db03
+user=maxscale_mon
+password=mon_password
+monitor_interval=2s
+auto_failover=true
+auto_rejoin=true
+
+# Servers
+
+[db01]
+type=server
+address=db01
+port=3306
+protocol=MariaDBBackend
+priority=1
+
+[db02]
+type=server
+address=db02
+port=3306
+protocol=MariaDBBackend
+priority=2
+
+[db03]
+type=server
+address=db03
+port=3306
+protocol=MariaDBBackend
+priority=3
+
+# Services
+
+[RW-service]
+type=service
+router=readwritesplit
+servers=db01,db02,db03
+user=maxscale_rw
+password=rw_password
+
+[RO-service]
+type=service
+router=readconnroute
+router_options=slave
+servers=db02,db03
+user=maxscale_ro
+password=ro_password
+
+# Listeners
+[RW-Listener]
+type=Listener
+service=RW-service
+protocol=MariaDBClient
+port=4006
+
+[RO-Listener]
+type=Listener
+service=RO-service
+protocol=MariaDBClient
+port=4008
