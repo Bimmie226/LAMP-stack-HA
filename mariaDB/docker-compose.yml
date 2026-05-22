@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   db01:
-    image: mariadb:latest
+    image: bitnami/mariadb-galera:latest
     container_name: db01
     hostname: db01
     environment: 
@@ -16,7 +16,7 @@ services:
       - galera
 
   db02: 
-    image: mariadb:latest
+    image: bitnami/mariadb-galera:latest
     container_name: db02
     hostname: db02
     environment: 
@@ -30,7 +30,7 @@ services:
       - galera 
 
   db03: 
-    image: mariadb:latest
+    image: bitnami/mariadb-galera:latest
     container_name: db03
     hostname: db03
     environment: 
