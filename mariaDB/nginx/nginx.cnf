@@ -4,7 +4,7 @@ http {
     upstream maxscale_instances {
         server maxscale01:8989 max_fails=3 fail_timeout=10s;
         server maxscale02:8989 max_fails=3 fail_timeout=10s;
-        server maxsacle03:8989 max_fails=3 fail_timeout=10s;
+        server maxscale03:8989 max_fails=3 fail_timeout=10s;
     }
 
     server {
