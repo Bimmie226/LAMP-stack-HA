@@ -9,7 +9,7 @@ wsrep_on=ON
 wsrep_provider=/usr/lib/galera/libgalera_smm.so
 
 wsrep_cluster_name="galera_cluster"
-wsrep_cluster_address="gcomm://db01,db02,db03"
+wsrep_cluster_address="gcomm://"
 
 wsrep_node_name="db01"
 wsrep_node_address="db01"

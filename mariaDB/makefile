@@ -21,7 +21,7 @@ logs:
 
 bootstrap: 
 	$(COMPOSE) up -d db01
-	docker exec -it db01 mariadb-install-db || true 
+	docker exec -it db01 mariadb -uroot -proot -e "SHOW STATUS LIKE 'wsrep_cluster_size';"
 	$(COMPOSE) restart db01
 	$(COMPOSE) up -d db02 db03
 	$(COMPOSE) up -d maxscale_01 maxscale_02 maxscale_03
