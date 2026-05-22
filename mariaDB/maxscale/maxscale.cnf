@@ -16,8 +16,8 @@ admin_port              = 8989
 type=monitor 
 module=galeramon
 servers=db01,db02,db03
-user=maxscale_mon
-password=mon_password
+user=root
+password=root
 monitor_interval=2s
 auto_failover=true
 auto_rejoin=true
@@ -51,26 +51,26 @@ priority=3
 type=service
 router=readwritesplit
 servers=db01,db02,db03
-user=maxscale_rw
-password=rw_password
+user=root
+password=root
 
 [RO-service]
 type=service
 router=readconnroute
 router_options=slave
 servers=db02,db03
-user=maxscale_ro
-password=ro_password
+user=root
+password=root
 
 # Listeners
 [RW-Listener]
 type=Listener
 service=RW-service
 protocol=MariaDBClient
-port=4006
+port=4000
 
 [RO-Listener]
 type=Listener
 service=RO-service
 protocol=MariaDBClient
-port=4008
+port=4001
