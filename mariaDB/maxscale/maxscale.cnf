@@ -7,8 +7,6 @@ maxlog                  = 1
 log_info                = 0              # Set to 1 for debug
 log_warning             = 1
 log_error               = 1
-admin_host              = 0.0.0.0
-admin_port              = 8989
 
 # Monitor
 
