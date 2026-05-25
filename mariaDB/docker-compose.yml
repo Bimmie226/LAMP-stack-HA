@@ -44,8 +44,6 @@ services:
     volumes: 
       - ./maxscale/maxscale.cnf:/etc/maxscale.cnf
     ports: 
-      - "4001:4000"
-      - "4004:4001"
       - "8981:8989"
     depends_on: 
       - db01
@@ -61,8 +59,6 @@ services:
     volumes: 
       - ./maxscale/maxscale.cnf:/etc/maxscale.cnf
     ports: 
-      - "4002:4000"
-      - "4005:4001"
       - "8982:8989"
     depends_on: 
       - db01
@@ -78,8 +74,6 @@ services:
     volumes: 
       - ./maxscale/maxscale.cnf:/etc/maxscale.cnf
     ports: 
-      - "4003:4000"
-      - "4006:4001"
       - "8983:8989"
     depends_on:
       - db01
@@ -93,7 +87,8 @@ services:
     container_name: nginx
     hostname: nginx
     ports: 
-      - "8989:80"
+      - "4000:4000"
+      - "4001:4001"
     volumes: 
       - ./nginx/nginx.cnf:/etc/nginx/nginx.conf:ro
     depends_on: 
