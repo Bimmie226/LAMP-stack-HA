@@ -128,19 +128,6 @@ make status
 # +--------------------+-------+
 ```
 
-### Check MaxScale via Admin API
-
-```bash
-# MaxScale instance 1
-curl http://localhost:8981/v1/servers
-
-# MaxScale instance 2
-curl http://localhost:8982/v1/servers
-
-# MaxScale instance 3
-curl http://localhost:8983/v1/servers
-```
-
 ### Test Read/Write Connection
 
 ```bash
