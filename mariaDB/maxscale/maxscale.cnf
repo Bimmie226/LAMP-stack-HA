@@ -1,12 +1,9 @@
 [maxscale]
-threads                 = auto           # Use all available CPU cores
+threads                 = auto   
 log_augmentation        = 1
 ms_timestamp            = 1
 syslog                  = 0
 maxlog                  = 1
-log_info                = 0              # Set to 1 for debug
-log_warning             = 1
-log_error               = 1
 admin_host              = 0.0.0.0
 admin_port              = 8989
 
@@ -16,11 +13,9 @@ admin_port              = 8989
 type=monitor 
 module=galeramon
 servers=db01,db02,db03
-user=maxscale_mon
-password=mon_password
+user=maxscale
+password=123456
 monitor_interval=2s
-auto_failover=true
-auto_rejoin=true
 
 # Servers
 
@@ -51,26 +46,25 @@ priority=3
 type=service
 router=readwritesplit
 servers=db01,db02,db03
-user=maxscale_rw
-password=rw_password
+user=maxscale
+password=123456
 
 [RO-service]
 type=service
 router=readconnroute
-router_options=slave
 servers=db02,db03
-user=maxscale_ro
-password=ro_password
+user=maxscale
+password=123456
 
 # Listeners
 [RW-Listener]
-type=Listener
+type=listener
 service=RW-service
 protocol=MariaDBClient
-port=4006
+port=4000
 
 [RO-Listener]
-type=Listener
+type=listener
 service=RO-service
 protocol=MariaDBClient
-port=4008
+port=4001

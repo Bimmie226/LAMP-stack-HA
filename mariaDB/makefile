@@ -1,6 +1,6 @@
 .PHONY: up down restart logs ps clean bootstrap status shell-db01 shell-db02 shell-db03 shell-maxscale
 
-COMPOSE=docker compose 
+COMPOSE=docker-compose 
 
 up: 
 	$(COMPOSE) up -d 
