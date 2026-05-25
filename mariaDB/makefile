@@ -30,10 +30,7 @@ bootstrap:
 	$(COMPOSE) up -d db02 db03
 
 	@echo "Creating MaxScale user ..."
-	docker exec db01 mariadb -uroot -proot -e "\
-	CREATE USER IF NOT EXISTS 'maxscale'@'%' IDENTIFIED BY '123456'; \
-	GRANT ALL PRIVILEGES ON *.* TO 'maxscale'@'%'; \
-	FLUSH PRIVILEGES;"
+	docker exec db01 mariadb -uroot -proot -e "CREATE USER IF NOT EXISTS 'maxscale'@'%' IDENTIFIED BY '123456'; GRANT ALL PRIVILEGES ON *.* TO 'maxscale'@'%'; FLUSH PRIVILEGES;"
 
 	$(COMPOSE) up -d maxscale_01 maxscale_02 maxscale_03 nginx
 # status:
