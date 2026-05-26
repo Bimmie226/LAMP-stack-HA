@@ -1,0 +1,226 @@
+version: "3.8" 
+
+services: 
+  db01: 
+    image: mariadb:11
+    networks: 
+      - galera
+    environment: 
+      MARIADB_ROOT_PASSWORD_FILE: /run/secrets/mariadb_root_password 
+    secrets: 
+      - mariadb_root_password 
+    configs: 
+      - source: db01_cnf
+        target: /etc/mysql/conf.d/db01.cnf
+        mode: 0444
+    volumes: 
+      - db01_data:/var/lib/mysql 
+    healthcheck: 
+      test: ["CMD", "mariadb-admin", "ping", "-uroot", "--password-file=/run/secrets/mariadb_root_password", "--silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 10 
+      start_period: 60s
+    deploy: 
+      replicas: 1
+      restart_policy: 
+        condition: on-failure
+        delay: 10s
+        max_attempts: 5
+        window: 120s
+      update_config: 
+        parallelism: 1
+        delay: 30s
+        failure_action: rollback
+        order: stop-first
+      rollback_config: 
+        parallelism: 1
+        delay: 10s
+      placement: 
+        constraints: 
+          - node.labels.db == db01 
+  db02: 
+    image: mariadb:11
+    networks: 
+      - galera
+    environment: 
+      MARIADB_ROOT_PASSWORD_FILE: /run/secrets/mariadb_root_password 
+    secrets: 
+      - mariadb_root_password 
+    configs: 
+      - source: db02_cnf
+        target: /etc/mysql/conf.d/db02.cnf
+        mode: 0444
+    volumes: 
+      - db02_data:/var/lib/mysql 
+    healthcheck: 
+      test: ["CMD", "mariadb-admin", "ping", "-uroot", "--password-file=/run/secrets/mariadb_root_password", "--silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 10 
+      start_period: 60s
+    deploy: 
+      replicas: 1
+      restart_policy: 
+        condition: on-failure
+        delay: 10s
+        max_attempts: 5
+        window: 120s
+      update_config: 
+        parallelism: 1
+        delay: 30s
+        failure_action: rollback
+        order: stop-first
+      rollback_config: 
+        parallelism: 1
+        delay: 10s
+      placement: 
+        constraints: 
+          - node.labels.db == db02
+
+  db03: 
+    image: mariadb:11
+    networks: 
+      - galera
+    environment: 
+      MARIADB_ROOT_PASSWORD_FILE: /run/secrets/mariadb_root_password 
+    secrets: 
+      - mariadb_root_password 
+    configs: 
+      - source: db03_cnf
+        target: /etc/mysql/conf.d/db03.cnf
+        mode: 0444
+    volumes: 
+      - db03_data:/var/lib/mysql 
+    healthcheck: 
+      test: ["CMD", "mariadb-admin", "ping", "-uroot", "--password-file=/run/secrets/mariadb_root_password", "--silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 10 
+      start_period: 60s
+    deploy: 
+      replicas: 1
+      restart_policy: 
+        condition: on-failure
+        delay: 10s
+        max_attempts: 5
+        window: 120s
+      update_config: 
+        parallelism: 1
+        delay: 30s
+        failure_action: rollback
+        order: stop-first
+      rollback_config: 
+        parallelism: 1
+        delay: 10s
+      placement: 
+        constraints: 
+          - node.labels.db == db03 
+
+  maxscale: 
+    image: mariadb/maxscale:latest 
+    networks: 
+      - galera
+    secrets: 
+      - maxscale_password
+    configs: 
+      - source: maxscale_cnf
+        target: /etc/maxscale.cnf
+        mode: 0444
+    healthcheck: 
+      test: ["CMD", "maxscale", "--ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    deploy: 
+      replicas: 3
+      restart_policy: 
+        condition: on-failure
+        delay: 10s
+        max_attempts: 5
+        window: 60s
+      update_config: 
+        parallelism: 1
+        delay: 20s
+        failure_action: rollback
+        order: stop-first
+      rollback_config: 
+        parallelism: 1
+        delay: 10s
+      placement: 
+        max_replicas_per_node: 1
+
+  nginx: 
+    image: nginx:latest
+    networks: 
+      - galera
+    configs: 
+      - source: nginx_cnf
+        target: /etc/nginx/nginx.conf
+        mode: 0444
+    ports: 
+      - target: 4000
+        published: 4000 
+        protocol: tcp
+        mode: ingress
+      - target: 4001
+        published: 4001
+        protocol: tcp 
+        mode: ingress
+    healthcheck: 
+      test: ["CMD", "nginx", "-t"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s 
+    deploy: 
+      replicas: 2
+      restart_policy: 
+        condition: on-failure
+        delay: 5s 
+        max_attempts: 5
+        window: 30s
+      update_config: 
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        order: start-first
+      rollback_config: 
+        parallelism: 1
+        delay: 5s
+      placement: 
+        max_replicas_per_node: 1
+
+secrets: 
+  mariadb_root_password: 
+    external: true 
+  maxscale_password: 
+    external: true 
+
+configs: 
+  db01_cnf: 
+    external: true
+  db02_cnf: 
+    external: true
+  db03_cnf: 
+    external: true 
+  maxscale_cnf: 
+    external: true 
+  nginx_cnf: 
+    external: true 
+
+networks: 
+  galera: 
+    driver: overlay 
+    attachable: false 
+    driver_opts: 
+      encrypted: "true" 
+
+volumes: 
+  db01_data: 
+    driver: local 
+  db02_data: 
+    driver: local 
+  db03_data: 
+    driver: local 
