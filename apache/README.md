@@ -146,7 +146,7 @@ Phân hoạch IP:
 lb01 = 192.168.70.91
 lb02 = 192.168.70.92
 
-VIP = 192.168.70.200
+VIP = 192.168.70.100
 ```
 
 Để cho phép HAProxy ràng buộc vào các địa chỉ IP được chia sẻ, chúng ta thêm dòng sau vào `/etc/sysctl.conf`:
@@ -181,7 +181,7 @@ vrrp_instance VI_1 {
     }
 
     virtual_ipaddress {
-        192.168.70.200
+        192.168.70.100
     }
 
     track_script {
@@ -227,7 +227,7 @@ vrrp_instance VI_1 {
     }
 
     virtual_ipaddress {
-        192.168.70.200
+        192.168.70.100
     }
 
     track_script {
@@ -240,3 +240,26 @@ Kiểm tra xem trên node MASTER đã có VIP chưa:
 
 ![alt text](../images/apache_03.png)
 
+## III. Kiểm tra
+
+### 3.0 Truy cập thử vào VIP trên browser 
+
+![alt text](../images/apache_05.png)
+
+### 3.1 Test failover 
+
+**Bước 1:** Giả sử LB01: `192.168.70.91` down bằng cách tắt nó 
+
+```bash
+sudo poweroff
+```
+
+**Bước 2:** Kiểm tra trên LB02: `192.168.70.92` xem có VIP không ? 
+
+![alt text](../images/apache_06.png)
+
+**Bước 3:** Thử truy cập trên browser: 
+
+![alt text](../images/apache_07.png)
+
+> Ta thấy: Trang web vẫn hoạt động bình thưởng kể cả khi node LB01 đã chết do đó nó đảm bảo tính HA 
