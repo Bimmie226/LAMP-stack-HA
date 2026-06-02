@@ -2,6 +2,8 @@
 
 ## I. Mô hình 
 
+![alt text](../images/apache_04.png)
+
 ## II. Cài đặt 
 
 ### 2.0 Triển khai service apache trên swarm 
