@@ -3,7 +3,6 @@ version: "3.8"
 services: 
   db01: 
     image: mariadb:11
-    hostname: db01
     networks: 
       - galera
     environment: 
@@ -36,7 +35,6 @@ services:
           - node.labels.db == db01 
   db02: 
     image: mariadb:11
-    hostname: db02
     networks: 
       - galera
     environment: 
@@ -70,7 +68,6 @@ services:
 
   db03: 
     image: mariadb:11
-    hostname: db03
     networks: 
       - galera
     environment: 
@@ -104,7 +101,6 @@ services:
 
   maxscale: 
     image: mariadb/maxscale:latest 
-    hostname: maxscale_deploy
     networks: 
       - galera
     secrets: 
@@ -113,6 +109,15 @@ services:
       - source: maxscale_cnf
         target: /etc/maxscale.cnf
         mode: 0444
+    ports: 
+      - target: 4000
+        published: 4000 
+        protocol: tcp
+        mode: ingress
+      - target: 4001
+        publishd: 4001
+        protocol: tcp 
+        mode: ingress 
     deploy: 
       replicas: 3
       restart_policy: 
@@ -128,42 +133,6 @@ services:
       rollback_config: 
         parallelism: 1
         delay: 10s
-      placement: 
-        max_replicas_per_node: 1
-
-  nginx: 
-    image: nginx:latest
-    hostname: nginx_deploy 
-    networks: 
-      - galera
-    configs: 
-      - source: nginx_cnf
-        target: /etc/nginx/nginx.conf
-        mode: 0444
-    ports: 
-      - target: 4000
-        published: 4000 
-        protocol: tcp
-        mode: ingress
-      - target: 4001
-        published: 4001
-        protocol: tcp 
-        mode: ingress
-    deploy: 
-      replicas: 2
-      restart_policy: 
-        condition: on-failure
-        delay: 5s 
-        max_attempts: 5
-        window: 30s
-      update_config: 
-        parallelism: 1
-        delay: 10s
-        failure_action: rollback
-        order: start-first
-      rollback_config: 
-        parallelism: 1
-        delay: 5s
       placement: 
         max_replicas_per_node: 1
 
