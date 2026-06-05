@@ -1,3 +1,5 @@
+# only use for docker compose 
+
 .PHONY: up down restart logs ps clean bootstrap status shell-db01 shell-db02 shell-db03 shell-maxscale
 
 COMPOSE=docker-compose
