@@ -104,7 +104,7 @@ services:
 
   maxscale: 
     image: mariadb/maxscale:latest 
-    hostname: maxscale
+    hostname: maxscale_deploy
     networks: 
       - galera
     secrets: 
@@ -133,7 +133,7 @@ services:
 
   nginx: 
     image: nginx:latest
-    hostname: nginx
+    hostname: nginx_deploy 
     networks: 
       - galera
     configs: 
