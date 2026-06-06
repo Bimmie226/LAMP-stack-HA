@@ -119,7 +119,7 @@ services:
         protocol: tcp
         mode: ingress
       - target: 4001
-        publishd: 4001
+        published: 4001
         protocol: tcp 
         mode: ingress 
     deploy: 
