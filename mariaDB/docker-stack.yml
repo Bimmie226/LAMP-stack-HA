@@ -3,6 +3,7 @@ version: "3.8"
 services: 
   db01: 
     image: mariadb:11
+    hostname: db01
     networks: 
       - galera
     environment: 
@@ -35,6 +36,7 @@ services:
           - node.labels.db == db01 
   db02: 
     image: mariadb:11
+    hostname: db02
     networks: 
       - galera
     environment: 
@@ -68,6 +70,7 @@ services:
 
   db03: 
     image: mariadb:11
+    hostname: db03
     networks: 
       - galera
     environment: 
@@ -101,6 +104,7 @@ services:
 
   maxscale: 
     image: mariadb/maxscale:latest 
+    hostname: maxscale_deploy
     networks: 
       - galera
     secrets: 
